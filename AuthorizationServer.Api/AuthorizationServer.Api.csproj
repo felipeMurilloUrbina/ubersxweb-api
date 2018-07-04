@@ -160,6 +160,10 @@
     <Compile Include="Migrations\201807030029060_InitialCreate.Designer.cs">
       <DependentUpon>201807030029060_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807040355359_addrole.cs" />
+    <Compile Include="Migrations\201807040355359_addrole.Designer.cs">
+      <DependentUpon>201807040355359_addrole.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AudienceModel.cs" />
     <Compile Include="Models\ModelFactory.cs" />
@@ -173,6 +177,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201807030029060_InitialCreate.resx">
       <DependentUpon>201807030029060_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807040355359_addrole.resx">
+      <DependentUpon>201807040355359_addrole.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

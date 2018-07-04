@@ -1,4 +1,7 @@
-﻿using Microsoft.Owin;
+﻿using AuthorizationServer.Api.Infrastructure;
+using AuthorizationServer.Api.Models;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using System;
@@ -42,25 +45,30 @@ namespace AuthorizationServer.Api.Providers
             return Task.FromResult<object>(null);
         }
 
-        public override Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
+        public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-
             context.OwinContext.Response.Headers.Add("Access-Control-Allow-Origin", new[] { "*" });
+            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+            User user = await userManager.FindAsync(context.UserName, context.Password);
 
-            //Dummy check here, you need to do your DB checks against membership system http://bit.ly/SPAAuthCode
-            if (context.UserName != context.Password)
+            if (user == null)
             {
-                context.SetError("invalid_grant", "The user name or password is incorrect");
-                //return;
-                return Task.FromResult<object>(null);
+                context.SetError("invalid_grant", "El Usuario o contraseña son incorrectos");
+                return;
             }
 
-            var identity = new ClaimsIdentity("JWT");
+            if (!user.EmailConfirmed)
+            {
+                context.SetError("invalid_grant", "Usuario no registrado.");
+                return;
+            }
+           
+            //var identity = new ClaimsIdentity("JWT");
 
-            identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
-            identity.AddClaim(new Claim("sub", context.UserName));
-            identity.AddClaim(new Claim(ClaimTypes.Role, "Manager"));
-            identity.AddClaim(new Claim(ClaimTypes.Role, "Supervisor"));
+            //identity.AddClaim(new Claim(ClaimTypes.Name, context.UserName));
+            //identity.AddClaim(new Claim("sub", context.UserName));
+            //identity.AddClaim(new Claim(ClaimTypes.Role, "Manager"));
+            //identity.AddClaim(new Claim(ClaimTypes.Role, "Supervisor"));
 
             var props = new AuthenticationProperties(new Dictionary<string, string>
                 {
@@ -69,9 +77,9 @@ namespace AuthorizationServer.Api.Providers
                     }
                 });
 
-            var ticket = new AuthenticationTicket(identity, props);
+            ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, "JWT");
+            var ticket = new AuthenticationTicket(oAuthIdentity, props);
             context.Validated(ticket);
-            return Task.FromResult<object>(null);
         }
     }
 }

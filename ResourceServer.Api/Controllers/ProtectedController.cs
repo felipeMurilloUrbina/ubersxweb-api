@@ -8,7 +8,7 @@ using System.Web.Http;
 
 namespace ResourceServer.Api.Controllers
 {
-    [Authorize]
+    [CustomAuthorization(Role ="Admin")]
     [RoutePrefix("api/protected")]
     public class ProtectedController : ApiController
     {
