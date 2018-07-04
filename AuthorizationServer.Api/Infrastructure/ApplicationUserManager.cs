@@ -33,7 +33,7 @@ namespace AuthorizationServer.Api.Infrastructure
             // Configure validation logic for passwords
             appUserManager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
+                RequiredLength = 5,
                 RequireNonLetterOrDigit = true,
                 RequireDigit = false,
                 RequireLowercase = true,
