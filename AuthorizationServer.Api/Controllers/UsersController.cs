@@ -10,10 +10,11 @@ using System.Web.Http;
 
 namespace AuthorizationServer.Api.Controllers
 {
+    [RoutePrefix("users")]
     public class UsersController : BaseApiController
     {
         [Authorize(Roles = "Admin")]
-        [Route("users")]
+        [Route("")]
         public IHttpActionResult GetUsers()
         {
             //Only SuperAdmin or Admin can delete users (Later when implement roles)
