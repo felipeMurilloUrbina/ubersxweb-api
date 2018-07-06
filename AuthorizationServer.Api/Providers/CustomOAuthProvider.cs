@@ -53,7 +53,7 @@ namespace AuthorizationServer.Api.Providers
 
             if (user == null)
             {
-                context.SetError("invalid_grant", "El Usuario o contraseña son incorrectos");
+                context.SetError("invalid_grant", "El usuario o contraseña son incorrectos");
                 return;
             }
 
